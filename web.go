@@ -1,14 +1,17 @@
 package main
 
 import (
-	//"encoding/json"
+	"encoding/json"
 	"flag"
 	"fmt"
 	martini "github.com/go-martini/martini"
 	core "github.com/goloc/core"
+	"runtime"
 )
 
 func main() {
+	runtime.GOMAXPROCS(16)
+
 	inputFile := flag.String("in", "", "input file")
 	flag.Parse()
 	if *inputFile == "" {
@@ -21,14 +24,10 @@ func main() {
 	mi := core.NewMemindexFromFile(*inputFile)
 
 	m := martini.Classic()
-	m.Get("/search/:search", func(params martini.Params) string {
-
-		var str string
-		results := mi.Search(params["search"], 10, 600, 300)
-		for _, res := range results {
-			str += res.Localisation.GetName()
-		}
-		return str
+	m.Get("/search/:search", func(params martini.Params) []byte {
+		list := mi.Search(params["search"], 5)
+		json, _ := json.Marshal(list.ToArray())
+		return json
 	})
 	m.Run()
 }
