@@ -1,11 +1,10 @@
 package main
 
 import (
-	"encoding/json"
 	"flag"
 	"fmt"
-	martini "github.com/go-martini/martini"
-	core "github.com/goloc/core"
+	"github.com/gin-gonic/gin"
+	goloc "github.com/goloc/goloc-core"
 	"runtime"
 )
 
@@ -21,13 +20,16 @@ func main() {
 		fmt.Printf("\nExecute help: web -help\n")
 		return
 	}
-	mi := core.NewMemindexFromFile(*inputFile)
+	mi := goloc.NewMemindexFromFile(*inputFile)
 
-	m := martini.Classic()
-	m.Get("/search/:search", func(params martini.Params) []byte {
-		list := mi.Search(params["search"], 5)
-		json, _ := json.Marshal(list.ToArray())
-		return json
+	router := gin.Default()
+	router.GET("/localisations/get/:id", func(c *gin.Context) {
+		loc := mi.Get(c.Params.ByName("id"))
+		c.JSON(200, loc)
 	})
-	m.Run()
+	router.GET("/localisations/search/:search", func(c *gin.Context) {
+		list := mi.Search(c.Params.ByName("search"), 5)
+		c.JSON(200, list.ToArray())
+	})
+	router.Run(":3000")
 }
