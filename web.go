@@ -4,7 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	goloc "github.com/goloc/goloc-core"
+	"github.com/goloc/goloc"
 	"runtime"
 )
 
