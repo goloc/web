@@ -28,7 +28,7 @@ func main() {
 		c.JSON(200, loc)
 	})
 	router.GET("/localisations/search/:search", func(c *gin.Context) {
-		list := mi.Search(c.Params.ByName("search"), 5)
+		list := mi.Search(c.Params.ByName("search"), 5, nil)
 		c.JSON(200, list.ToArray())
 	})
 	router.Run(":3000")
