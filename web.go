@@ -23,11 +23,11 @@ func main() {
 	mi := goloc.NewMemindexFromFile(*inputFile)
 
 	router := gin.Default()
-	router.GET("/localisations/get/:id", func(c *gin.Context) {
+	router.GET("/locations/:id", func(c *gin.Context) {
 		loc := mi.Get(c.Params.ByName("id"))
 		c.JSON(200, loc)
 	})
-	router.GET("/localisations/search/:search", func(c *gin.Context) {
+	router.GET("/places/:search", func(c *gin.Context) {
 		list := mi.Search(c.Params.ByName("search"), 5, nil)
 		c.JSON(200, list.ToArray())
 	})
