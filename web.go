@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	runtime.GOMAXPROCS(16)
+	runtime.GOMAXPROCS(runtime.NumCPU())
 
 	inputFile := flag.String("in", "", "input file")
 	flag.Parse()
