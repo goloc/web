@@ -5,12 +5,9 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/goloc/goloc"
-	"runtime"
 )
 
 func main() {
-	runtime.GOMAXPROCS(runtime.NumCPU())
-
 	inputFile := flag.String("in", "", "input file")
 	flag.Parse()
 	if *inputFile == "" {
@@ -28,8 +25,12 @@ func main() {
 		c.JSON(200, loc)
 	})
 	router.GET("/places/:search", func(c *gin.Context) {
-		list := mi.Search(c.Params.ByName("search"), 5, nil)
-		c.JSON(200, list.ToArray())
+		if list, err := mi.Search(c.Params.ByName("search"), 5, nil); err == nil {
+			c.JSON(200, list.ToArray())
+		} else {
+			c.JSON(500, err)
+		}
+
 	})
 	router.Run(":3000")
 }
